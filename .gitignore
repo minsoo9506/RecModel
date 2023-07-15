@@ -1,0 +1,10 @@
+*.csv
+
+__pycache__
+.pytest_cache
+
+.tox
+
+.python-version
+
+.env
