@@ -8,3 +8,9 @@ __pycache__
 .python-version
 
 .env
+
+todo.md
+
+data
+
+lightning_logs
