@@ -12,7 +12,7 @@ LR = 0.001
 
 
 class LitBase(pl.LightningModule):
-    def __init__(self, model, args: argparse.Namespace = None):
+    def __init__(self, model, args: argparse.Namespace) -> None:
         super().__init__()
         self.model = model
         self.args = vars(args) if args is not None else {}
@@ -68,14 +68,16 @@ class LitBase(pl.LightningModule):
 
     def validation_step(
         self, batch: tuple[torch.Tensor, torch.Tensor], batch_idx: int
-    ) -> dict[str, torch.Tensor]:
+    ) -> None:
         y, preds, loss = self._run_on_batch(batch)
         # self.valid_acc(preds, y)
 
         self.log("validation/loss", loss, prog_bar=True, sync_dist=True)
         # self.log("validation/acc", self.valid_acc, on_step=False, on_epoch=True)
 
-    def test_step(self, batch: tuple[torch.Tensor, torch.Tensor], batch_idx: int):
+    def test_step(
+        self, batch: tuple[torch.Tensor, torch.Tensor], batch_idx: int
+    ) -> None:
         y, preds, loss = self._run_on_batch(batch)
         # self.test_acc(preds, y)
 

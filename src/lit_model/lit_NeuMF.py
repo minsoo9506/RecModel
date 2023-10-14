@@ -11,7 +11,7 @@ LR = 0.001
 
 
 class LitNeuMF(LitBase):
-    def __init__(self, model, args: argparse.Namespace = None):
+    def __init__(self, model, args: argparse.Namespace):
         super().__init__(model, args)
 
         self.train_acc = Accuracy("binary")
@@ -33,7 +33,7 @@ class LitNeuMF(LitBase):
 
     def validation_step(
         self, batch: tuple[torch.Tensor, torch.Tensor], batch_idx: int
-    ) -> dict[str, torch.Tensor]:
+    ) -> None:
         y, preds, loss = self._run_on_batch(batch)
         self.valid_acc(preds, y)
 
@@ -46,7 +46,9 @@ class LitNeuMF(LitBase):
             on_epoch=True,
         )
 
-    def test_step(self, batch: tuple[torch.Tensor, torch.Tensor], batch_idx: int):
+    def test_step(
+        self, batch: tuple[torch.Tensor, torch.Tensor], batch_idx: int
+    ) -> None:
         y, preds, loss = self._run_on_batch(batch)
         self.test_acc(preds, y)
 
