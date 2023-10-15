@@ -15,6 +15,9 @@
 - [DeepFM: A Factorization-Machine based Neural Network for CTR Prediction, 2017](https://arxiv.org/abs/1703.04247)
 - code: [`torch model`](./src/model/DeepFM.py), [`lit model`](./src/lit_model/lit_DeepFM.py), [`KMRD-small example`](./notebook/DeepFM_KMRD_small.ipynb)
 
+### Two-Tower
+- [Sampling-Bias-Corrected Neural Modeling for Large Corpus Item Recommendations, RecSys 2019](https://research.google/pubs/pub48840/)
+- code: [`torch model`](./src/model/TwoTower.py), [`lit model`](./src/lit_model/lit_TwoTower.py), [`KuaiRec example`](./notebook/Two_Tower_KuaiRec.ipynb)
 
 # Benchmark
 ## Data

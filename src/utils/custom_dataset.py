@@ -53,3 +53,71 @@ class DeepFMDataset(Dataset):
         target[target <= 9] = 0
         target[target > 9] = 1
         return target
+
+
+class TwoTowerDataset(Dataset):
+    def __init__(
+        self,
+        data: pd.DataFrame,
+        user_num_cols: list[str],
+        item_num_cols: list[str],
+        user_cate_cols: list[str],
+        item_cate_cols: list[str],
+        label: str,
+    ):
+        """init
+
+        Args:
+            data (pd.DataFrame): data include feature and label
+            user_num_cols (list[str]): numeric user columns' name
+            item_num_cols (list[str]): numeric item columns' name
+            user_cate_cols (list[str]): categoric user columns' name
+            item_cate_cols (list[str]): categoric item columns' name
+            label (str): label(target)'s name
+        """
+
+        self.user_cate = data[user_cate_cols]
+        self.user_num = data[user_num_cols]
+        self.item_cate = data[item_cate_cols]
+        self.item_num = data[item_num_cols]
+
+        for user_cate_col in user_cate_cols:
+            user_to_idx = {
+                original: idx
+                for idx, original in enumerate(self.user_cate[user_cate_col].unique())
+            }
+            self.user_cate[user_cate_col] = self.user_cate[user_cate_col].map(
+                user_to_idx
+            )
+
+        for item_cate_col in item_cate_cols:
+            item_to_idx = {
+                original: idx
+                for idx, original in enumerate(self.item_cate[item_cate_col].unique())
+            }
+            self.item_cate[item_cate_col] = self.item_cate[item_cate_col].map(
+                item_to_idx
+            )
+
+        self.user_cate = torch.from_numpy(self.user_cate.values).type(torch.int32)
+        self.user_num = torch.from_numpy(self.user_num.values).type(torch.float32)
+        self.item_cate = torch.from_numpy(self.item_cate.values).type(torch.int32)
+        self.item_num = torch.from_numpy(self.item_num.values).type(torch.float32)
+
+        self.y = torch.from_numpy(data[label].values).type(torch.float32)
+
+    def __len__(self) -> int:
+        return len(self.y)
+
+    def __getitem__(
+        self, idx: int
+    ) -> tuple[
+        tuple[torch.Tensor, torch.Tensor],
+        tuple[torch.Tensor, torch.Tensor],
+        torch.Tensor,
+    ]:
+        return (
+            (self.user_cate[idx, :], self.user_num[idx, :]),
+            (self.item_cate[idx, :], self.item_num[idx, :]),
+            self.y[idx],
+        )
