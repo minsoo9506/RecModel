@@ -76,32 +76,48 @@ class TwoTowerDataset(Dataset):
             label (str): label(target)'s name
         """
 
-        user_cols = user_cate_cols + user_num_cols
-        item_cols = item_cate_cols + item_num_cols
-
-        self.user = data[user_cols]
-        self.item = data[item_cols]
+        self.user_cate = data[user_cate_cols]
+        self.user_num = data[user_num_cols]
+        self.item_cate = data[item_cate_cols]
+        self.item_num = data[item_num_cols]
 
         for user_cate_col in user_cate_cols:
             user_to_idx = {
                 original: idx
-                for idx, original in enumerate(self.user[user_cate_col].unique())
+                for idx, original in enumerate(self.user_cate[user_cate_col].unique())
             }
-            self.user[user_cate_col] = self.user[user_cate_col].map(user_to_idx)
+            self.user_cate[user_cate_col] = self.user_cate[user_cate_col].map(
+                user_to_idx
+            )
 
         for item_cate_col in item_cate_cols:
             item_to_idx = {
                 original: idx
-                for idx, original in enumerate(self.item[item_cate_col].unique())
+                for idx, original in enumerate(self.item_cate[item_cate_col].unique())
             }
-            self.item[item_cate_col] = self.item[item_cate_col].map(item_to_idx)
+            self.item_cate[item_cate_col] = self.item_cate[item_cate_col].map(
+                item_to_idx
+            )
 
-        self.user = torch.from_numpy(self.user.values).type(torch.float32)
-        self.item = torch.from_numpy(self.item.values).type(torch.float32)
+        self.user_cate = torch.from_numpy(self.user_cate.values).type(torch.int32)
+        self.user_num = torch.from_numpy(self.user_num.values).type(torch.float32)
+        self.item_cate = torch.from_numpy(self.item_cate.values).type(torch.int32)
+        self.item_num = torch.from_numpy(self.item_num.values).type(torch.float32)
+
         self.y = torch.from_numpy(data[label].values).type(torch.float32)
 
     def __len__(self) -> int:
         return len(self.y)
 
-    def __getitem__(self, idx: int) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
-        return self.user[idx, :], self.item[idx, :], self.y[idx]
+    def __getitem__(
+        self, idx: int
+    ) -> tuple[
+        tuple[torch.Tensor, torch.Tensor],
+        tuple[torch.Tensor, torch.Tensor],
+        torch.Tensor,
+    ]:
+        return (
+            (self.user_cate[idx, :], self.user_num[idx, :]),
+            (self.item_cate[idx, :], self.item_num[idx, :]),
+            self.y[idx],
+        )
