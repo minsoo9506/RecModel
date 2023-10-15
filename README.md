@@ -18,7 +18,6 @@
 ### Two-Tower
 - [Sampling-Bias-Corrected Neural Modeling for Large Corpus Item Recommendations, RecSys 2019](https://research.google/pubs/pub48840/)
 - code: [`torch model`](./src/model/TwoTower.py), [`lit model`](./src/lit_model/lit_TwoTower.py), [`KuaiRec example`](./notebook/Two_Tower_KuaiRec.ipynb)
->>>>>>> develop
 
 # Benchmark
 ## Data
